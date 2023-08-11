@@ -10,3 +10,4 @@ DB_URL=xyz
 PORT=8000
 NODE_ENV=development
 JWT_SECRET=xyz
+REACT_APP_URL=http:xyz
