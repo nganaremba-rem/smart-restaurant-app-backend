@@ -17,7 +17,6 @@ exports.authenticate = asyncHandler(async (req, res, next) => {
     try {
       token = req.headers.authorization.split(" ")[1];
       const decoded_token = jwt.verify(token, process.env.JWT_SECRET);
-      console.log(decoded_token);
       req.user = await User.findById(decoded_token.id).select("-password");
       next();
     } catch (err) {
@@ -31,7 +30,6 @@ exports.authenticate = asyncHandler(async (req, res, next) => {
 });
 
 exports.signup = asyncHandler(async (req, res) => {
-  console.log(req.body);
   const { firstName, lastName, role, email, password } = req.body;
   if (!firstName || !lastName || !email || !password || !role) {
     res.status(400);
