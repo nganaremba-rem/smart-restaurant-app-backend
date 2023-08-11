@@ -1,7 +1,7 @@
 # smart-restaurant-app-backend
 Smart Restaurant App Research and Development Project 2023-24/Autumn
 
-#create config.env file
+# create config.env file
 DB_PASSWORD=xyz
 DB_USERNAME=xyz
 DB_URL=xyz
