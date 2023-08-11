@@ -13,6 +13,7 @@ const orderSchema = new mongoose.Schema({
     default: "Pending",
   },
   createdAt: { type: Date, default: Date.now },
+  tableNumber: { type: Number, required: true },
 });
 
 const Order = mongoose.model("Order", orderSchema);

@@ -5,6 +5,7 @@ const xss = require("xss-clean");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const userRouter = require("./routes/userRoutes");
+const menuItemRouter = require("./routes/menuItemRoutes");
 const app = express();
 
 const limiter = rateLimit({
@@ -32,5 +33,5 @@ app.use(xss());
 app.use(helmet());
 
 app.use("/api/v1/users", userRouter);
-
+app.use("/api/v1/menuItems", menuItemRouter);
 module.exports = app;

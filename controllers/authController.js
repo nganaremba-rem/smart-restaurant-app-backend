@@ -66,6 +66,7 @@ exports.signup = asyncHandler(async (req, res) => {
 });
 
 exports.signin = asyncHandler(async (req, res) => {
+  console.log(req.query);
   const { email, password } = req.body;
   const user = await User.findOne({ email });
   if (user && (await user.matchPassword(password))) {
