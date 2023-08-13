@@ -31,7 +31,6 @@ app.use(xss());
 
 // Basic security headers
 app.use(helmet());
-
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/menuItems", menuItemRouter);
 module.exports = app;

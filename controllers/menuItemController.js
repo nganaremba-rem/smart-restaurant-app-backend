@@ -36,7 +36,7 @@ exports.getMenuItems = asyncHandler(async (req, res) => {
 
 exports.deleteMenuItem = asyncHandler(async (req, res) => {
   if (req.user && req.user.role == "manager") {
-    const newMenuItem = await MenuItem.findByIdAndDelete(req.body._id);
+    const newMenuItem = await MenuItem.findByIdAndDelete(req.params.id);
     if (!newMenuItem) {
       throw new Error("Failed to delete this Item");
     }
@@ -50,32 +50,14 @@ exports.deleteMenuItem = asyncHandler(async (req, res) => {
 
 exports.updateMenuItem = asyncHandler(async (req, res) => {
   if (req.user && req.user.role == "manager") {
-    const newMenuItem = await MenuItem.findById(req.body._id);
-    if (req.body.sumOfRatings || req.body.totalRatings || req.body.avgRating) {
-      throw new Error("You can't alter customer ratings");
-    }
+    const newMenuItem = await MenuItem.findById(req.params.id);
     if (!newMenuItem) {
       throw new Error("Failed to update this Item");
     }
     newMenuItem.set(req.body);
     await newMenuItem.save();
     res.status(201).json(newMenuItem);
-  } else if (req.user && req.user.role == "customer") {
-    const newMenuItem = await MenuItem.findById(req.body._id);
-    if (!newMenuItem) {
-      throw new Error("Failed to add rating");
-    }
-    if (req.body.rating && req.body.rating <= 0.00005) {
-      const currentSumOfRatings = newMenuItem.sumOfRatings;
-      const currentNoOfRatings = newMenuItem.totalRatings;
-      newMenuItem.set({
-        sumOfRatings: currentSumOfRatings + req.body.rating,
-        totalRatings: currentNoOfRatings + 1,
-      });
-      await newMenuItem.save();
-      res.status(201).json(newMenuItem);
-    } else {
-      throw new Error("You cant update this attribute of item");
-    }
+  } else {
+    throw new Error("You cant update this attribute of item");
   }
 });
