@@ -14,5 +14,8 @@ router
   .delete(menuItemController.deleteMenuItem)
   .patch(menuItemController.updateMenuItem);
 
-router.route("/rate/:id").post(ratingController.addMenuRating);
+router
+  .route("/rating/:id")
+  .post(ratingController.addMenuRating)
+  .get(ratingController.getMenuRating);
 module.exports = router;
