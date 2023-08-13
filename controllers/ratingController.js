@@ -17,23 +17,32 @@ exports.addMenuRating = asyncHandler(async (req, res) => {
 });
 
 exports.getMenuRating = asyncHandler(async (req, res) => {
-  const menuItemId = new ObjectId(req.params.id);
   if (req.user) {
     const results = await Rating.aggregate([
-      {
-        $match: { menuId: menuItemId },
-      },
       {
         $group: {
           _id: "$menuId",
           averageRating: { $avg: "$rating" },
+          numberOfRatings: { $sum: 1 },
+          reviews: {
+            $push: {
+              review: "$review",
+            },
+          },
+        },
+      },
+      {
+        $set: {
+          averageRating: { $round: ["$averageRating", 1] }, // Round to 1 decimal place
         },
       },
     ]);
     if (results.length > 0) {
       res.status(200).json(results);
     } else {
-      res.status(200).json({ averageRating: 0 });
+      res.status(200).json([]);
     }
+  } else {
+    throw new Error("Unauthorized access");
   }
 });
