@@ -20,6 +20,49 @@ exports.createOrder = asyncHandler(async (req, res) => {
 });
 
 // api/v1/orders/:id
+exports.deleteOrder = asyncHandler(async (req, res) => {
+  const currentOrder = await Order.findById(req.params.id);
+  if (!currentOrder) {
+    throw new Error("Order not found");
+  }
+  // customer deletes the order
+  if (
+    req.user &&
+    req.user.role == "customer" &&
+    currentOrder.user == req.user._id
+  ) {
+    if (currentOrder.status != "pending") {
+      throw new Error("You can't cancel the order now");
+    }
+    await Order.findByIdAndDelete(req.params.id);
+    res.status(200);
+  }
+  // waiter deletes the order
+  else if (req.user && currentOrder.waiter == req.user._id) {
+    if (
+      currentOrder.status != "pending" &&
+      currentOrder.status != "confirmed by waiter"
+    ) {
+      throw new Error("You can't cancel the order now");
+    }
+    await Order.findByIdAndDelete(req.params.id);
+    res.status(200);
+  }
+  // chef deletes the order
+  else if (
+    req.user &&
+    currentOrder.chef == req.user._id &&
+    (currentOrder.status == "confirmed by waiter" ||
+      currentOrder.status == "confirmed by chef")
+  ) {
+    await Order.findByIdAndDelete(req.params.id);
+    res.status(200);
+  } else {
+    res.status(403).json({ error: "You are not allowed to delete the order" });
+  }
+});
+
+// api/v1/orders/:id
 exports.updateOrder = asyncHandler(async (req, res) => {
   const currentOrder = await Order.findById(req.params.id);
   if (!currentOrder) {
@@ -67,4 +110,24 @@ exports.updateOrder = asyncHandler(async (req, res) => {
   } else {
     throw new Error("You are not allowed to update this order");
   }
+});
+
+// /api/v1/orders?status=pending
+exports.getOrders = asyncHandler(async (req, res) => {
+  if (
+    req.user &&
+    req.user != "customer" &&
+    req.user != "waiter" &&
+    req.user != "chef"
+  ) {
+    throw new Error("You are not alllowed to view the orders");
+  }
+  const features = new APIFeatures(MenuItem.find(), req.query)
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+  let orders = [];
+  orders = await features.query.find();
+  res.status(200).json(orders);
 });

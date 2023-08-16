@@ -22,16 +22,14 @@ exports.getMenuItems = asyncHandler(async (req, res) => {
     .sort()
     .limitFields()
     .paginate();
-  let MenuItems = "";
+  let MenuItems = [];
   if (req.user == "customer") {
     MenuItems = await features.query.find({ availability: true });
-  } else {
+    res.status(200).json(MenuItems);
+  } else if (req.user == "manager" || req) {
     MenuItems = await features.query.find();
+    res.status(200).json(MenuItems);
   }
-  if (!MenuItems) {
-    throw new Error("Failed to get Menu Items");
-  }
-  res.status(200).json(MenuItems);
 });
 
 exports.deleteMenuItem = asyncHandler(async (req, res) => {
