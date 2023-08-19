@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const asyncHandler = require("express-async-handler");
 const User = require("./../models/userModel");
+const { sendOtp } = require("./otpController");
 
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -36,32 +37,36 @@ exports.signup = asyncHandler(async (req, res) => {
     throw new Error("Please enter all details");
   }
 
-  const user = await User.findOne({ email });
-  if (user) {
+  let user = await User.findOne({ email });
+  if (user && user.isVerified) {
     res.status(400);
     throw new Error("Account already exists. Please SignIn");
   }
 
-  const newUser = await User.create({
-    firstName,
-    lastName,
-    role,
-    email,
-    password,
-  });
-
-  if (newUser) {
-    res.status(201).json({
-      _id: newUser._id,
-      firstName: newUser.firstName,
-      lastName: newUser.lastName,
-      role: newUser.role,
-      email: newUser.email,
-      token: generateToken(newUser._id),
-    });
+  if (sendOtp(email)) {
+    if (user) {
+      res.status(201).json(user);
+    } else {
+      const nuser = await User.create({
+        firstName,
+        lastName,
+        role,
+        email,
+        password,
+      });
+      if (nuser) {
+        res.status(201).json({
+          _id: nuser._id,
+          firstName: nuser.firstName,
+          lastName: nuser.lastName,
+          email: nuser.email,
+          role: nuser.role,
+        });
+      }
+    }
   } else {
     res.status(400);
-    throw new Error("failed to sign up");
+    throw new Error("failed to send OTP");
   }
 });
 
