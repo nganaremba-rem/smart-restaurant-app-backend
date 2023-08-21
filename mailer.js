@@ -2,7 +2,6 @@ const nodemailer = require("nodemailer");
 
 class Mailer {
   constructor(to, text, subject) {
-    console.log("hi");
     this.to = to;
     this.text = text;
     this.subject = subject;

@@ -11,9 +11,9 @@ const orderSchema = new mongoose.Schema({
       required: true,
     },
   ],
-  totalAmount: { type: Number },
+  totalAmount: { type: Number, required: true },
   createdAt: { type: Date, default: Date.now },
-  tableNumber: { type: Number, required: true },
+  tableNumber: { type: String, required: true },
   status: {
     type: String,
     enum: [

@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const ratingSchema = new mongoose.Schema({
-  rating: { type: Number, default: 1, min: 1, max: 5 },
+  rating: { type: Number, min: 1, max: 5, required: true },
   menuId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "MenuItem",

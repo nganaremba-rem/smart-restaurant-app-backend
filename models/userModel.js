@@ -21,10 +21,8 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
+    enum: ["customer", "waiter", "chef", "manager", "admin", "owner"],
   },
-  customizedMenu: [
-    { type: mongoose.Schema.Types.ObjectId, ref: "MenuItem", required: true },
-  ],
   pointCashBack: {
     type: Number,
     required: true,

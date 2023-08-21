@@ -38,7 +38,7 @@ exports.deleteMenuItem = asyncHandler(async (req, res) => {
     if (!newMenuItem) {
       throw new Error("Failed to delete this Item");
     }
-    res.status(201).json(newMenuItem);
+    res.status(201);
   } else {
     res
       .status(403)

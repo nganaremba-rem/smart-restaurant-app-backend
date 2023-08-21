@@ -7,7 +7,7 @@ const menuSchema = new mongoose.Schema({
   cuisine: { type: String },
   description: { type: String },
   spicinessLevel: { type: Number, min: 1, max: 3 },
-  preparationTime: { type: Number, required: true },
+  preparationTime: { type: Number },
   calories: { type: Number },
   availability: { type: Boolean, default: true },
   createdAt: { type: Date, default: Date.now },
