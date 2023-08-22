@@ -11,6 +11,8 @@ const menuSchema = new mongoose.Schema({
   calories: { type: Number },
   availability: { type: Boolean, default: true },
   createdAt: { type: Date, default: Date.now },
+  averageRating: { type: Number, default: 0 },
+  numberOfRatings: { type: Number, default: 0 },
 });
 
 const MenuItem = mongoose.model("MenuItem", menuSchema);

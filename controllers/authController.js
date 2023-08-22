@@ -40,12 +40,19 @@ exports.signup = asyncHandler(async (req, res) => {
   let user = await User.findOne({ email });
   if (user && user.isVerified) {
     res.status(400);
-    throw new Error("Account already exists. Please SignIn");
+    throw new Error("Account with this email already exists. Please SignIn");
   }
 
   if (sendOtp(email)) {
     if (user) {
-      res.status(201).json(user);
+      res.status(201).json({
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        role: user.role,
+        isVerified: user.isVerified,
+      });
     } else {
       const nuser = await User.create({
         firstName,
@@ -61,6 +68,7 @@ exports.signup = asyncHandler(async (req, res) => {
           lastName: nuser.lastName,
           email: nuser.email,
           role: nuser.role,
+          isVerified: nuser.isVerified,
         });
       }
     }
@@ -74,8 +82,12 @@ exports.signin = asyncHandler(async (req, res) => {
   console.log(req.query);
   const { email, password } = req.body;
   const user = await User.findOne({ email });
+  if (user && !user.isVerified) {
+    res.status(401);
+    throw new Error("Please complete your account verification");
+  }
   if (user && (await user.matchPassword(password))) {
-    res.json({
+    res.status(200).json({
       _id: user._id,
       firstName: user.firstName,
       lastName: user.lastName,

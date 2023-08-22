@@ -22,6 +22,7 @@ const userSchema = new mongoose.Schema({
   role: {
     type: String,
     enum: ["customer", "waiter", "chef", "manager", "admin", "owner"],
+    required: true,
   },
   pointCashBack: {
     type: Number,

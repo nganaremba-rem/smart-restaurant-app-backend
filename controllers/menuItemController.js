@@ -1,7 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const MenuItem = require("../models/menuModel");
 const APIFeatures = require("./apiFeatures");
-
 exports.addMenuItem = asyncHandler(async (req, res) => {
   if (req.user && req.user.role == "manager") {
     const newMenuItem = await MenuItem.create(req.body);
@@ -22,11 +21,12 @@ exports.getMenuItems = asyncHandler(async (req, res) => {
     .sort()
     .limitFields()
     .paginate();
+
   let MenuItems = [];
-  if (req.user == "customer") {
+  if (req.user && req.user.role == "customer") {
     MenuItems = await features.query.find({ availability: true });
     res.status(200).json(MenuItems);
-  } else if (req.user == "manager" || req) {
+  } else if (req.user && req.user.role == "manager") {
     MenuItems = await features.query.find();
     res.status(200).json(MenuItems);
   }

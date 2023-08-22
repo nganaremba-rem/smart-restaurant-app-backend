@@ -19,12 +19,11 @@ exports.sendOtp = asyncHandler(async (email) => {
   let randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
   randomNumber = randomNumber.toString();
   const user = await OTP.findOne({ email });
+  const message =
+    randomNumber.toString() +
+    " is the OTP to login to you Smart Restaurant App account. Do not disclose it to anyone";
   let otp = 0;
-  const mailer = new Mailer(
-    email,
-    randomNumber,
-    "Your OTP For Smart Restaurant is: "
-  );
+  const mailer = new Mailer(email, randomNumber, "Smart Restaurant App");
   mailer
     .sendEmail()
     .then(() => {
@@ -49,8 +48,8 @@ exports.sendOtp = asyncHandler(async (email) => {
 exports.verifyOtp = asyncHandler(async (req, res) => {
   const email = req.body.email;
   const enteredOTP = req.body.otp;
-  if (!email) {
-    throw Error("Please provide email");
+  if (!email || !enteredOTP) {
+    throw Error("Please provide email and entered OTP");
   }
   const storedOtp = await OTP.findOne({ email });
   if (!storedOtp) {
