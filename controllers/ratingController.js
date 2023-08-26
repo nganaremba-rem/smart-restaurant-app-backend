@@ -3,20 +3,20 @@ const Rating = require("../models/ratingModel");
 const MenuItem = require("../models/menuModel");
 const asyncHandler = require("express-async-handler");
 const mongoose = require("mongoose");
+const CustomError = require("../customError");
 exports.addMenuRating = asyncHandler(async (req, res) => {
   if (req.user && req.user.role == "customer") {
     req.body.reviewer = req.user._id;
     req.body.menuId = req.params.id;
     const newMenuRating = await Rating.create(req.body);
-    // console.log(1);
     updateMenuAverageRating(req.params.id); // Asynchronous call
-    // console.log(2);
+
     if (!newMenuRating) {
-      throw new Error("failed to add rating");
+      throw new CustomError("failed to add rating", 500);
     }
-    res.status(200).json(newMenuRating);
+    res.status(200).json({ message: "Thanks for your feedback" });
   } else {
-    res.status(403).json({ error: "You don't have premission to give rating" });
+    throw new CustomError("You don't have premission to give rating", 403);
   }
 });
 
@@ -29,7 +29,6 @@ const updateMenuAverageRating = asyncHandler(async (menuId) => {
       numberOfRatings: x["numberOfRatings"],
     }
   );
-  // console.log(3);
 });
 
 const getMenuRating = asyncHandler(async (menuId) => {
@@ -65,6 +64,6 @@ const getMenuRating = asyncHandler(async (menuId) => {
       };
     }
   } else {
-    throw new Error("Unauthorized access");
+    throw new CustomError("Please provide menu ID");
   }
 });

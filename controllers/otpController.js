@@ -11,19 +11,14 @@ const generateToken = (id) => {
 };
 
 exports.sendOtp = asyncHandler(async (email) => {
-  if (!email) {
-    throw Error("Please provide email");
-  }
   const min = 100000;
   const max = 999999;
   let randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
   randomNumber = randomNumber.toString();
-  const user = await OTP.findOne({ email });
   const message =
     randomNumber.toString() +
-    " is the OTP to login to you Smart Restaurant App account. Do not disclose it to anyone";
-  let otp = 0;
-  const mailer = new Mailer(email, randomNumber, "Smart Restaurant App");
+    " is the OTP to login to you Smart Restaurant App account. Do not disclose it to anyone.";
+  const mailer = new Mailer(email, message, "Smart Restaurant App");
   mailer
     .sendEmail()
     .then(() => {
@@ -32,34 +27,31 @@ exports.sendOtp = asyncHandler(async (email) => {
     .catch((err) => {
       return false;
     });
-  if (user) {
-    otp = await OTP.updateOne(
-      { email },
-      { code: randomNumber, createdAt: new Date() }
-    );
-  } else {
-    otp = await OTP.create({ email, code: randomNumber });
-  }
-  if (!otp) {
-    throw Error("Failed to generate OTP");
-  }
+  await OTP.create({
+    email,
+    code: randomNumber,
+    createdAt: new Date(),
+  });
 });
 
 exports.verifyOtp = asyncHandler(async (req, res) => {
-  const email = req.body.email;
-  const enteredOTP = req.body.otp;
-  if (!email || !enteredOTP) {
-    throw Error("Please provide email and entered OTP");
+  const { firstName, lastName, role, email, password, enteredOTP } = req.body;
+  if (!email || !enteredOTP || !password || !lastName || !firstName || !role) {
+    throw new Error("");
   }
-  const storedOtp = await OTP.findOne({ email });
+  const arr = await OTP.find({ email }).sort({ createdAt: -1 });
+  const storedOtp = arr[0];
   if (!storedOtp) {
-    res.status(500).json({ message: "Something went" });
+    throw new Error("Something went wrong");
   }
   if (storedOtp.code == enteredOTP) {
-    const newUser = await User.findOneAndUpdate(
-      { email },
-      { isVerified: true, new: true }
-    );
+    const newUser = await User.create({
+      firstName,
+      lastName,
+      role,
+      email,
+      password,
+    });
     res.status(201).json({
       _id: newUser._id,
       firstName: newUser.firstName,
@@ -67,9 +59,10 @@ exports.verifyOtp = asyncHandler(async (req, res) => {
       role: newUser.role,
       email: newUser.email,
       token: generateToken(newUser._id),
-      isVerified: true,
     });
   } else {
-    return false;
+    const error = new Error("Incorrect OTP");
+    error.statusCode = 400;
+    throw error;
   }
 });

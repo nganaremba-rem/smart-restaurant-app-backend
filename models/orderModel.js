@@ -6,9 +6,15 @@ const orderSchema = new mongoose.Schema({
   chef: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   menuItems: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "MenuItem",
-      required: true,
+      menuName: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "MenuItem",
+        required: true,
+      },
+      quantity: {
+        type: Number,
+        min: 1,
+      },
     },
   ],
   totalAmount: { type: Number, required: true },
