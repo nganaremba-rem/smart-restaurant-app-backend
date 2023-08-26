@@ -9,9 +9,10 @@ exports.addMenuItem = asyncHandler(async (req, res) => {
     }
     res.status(201).json(newMenuItem);
   } else {
-    res
-      .status(403)
-      .json({ error: "You are not authorized to add menu items." });
+    throw new Error("ERROR TESTING");
+    // res
+    //   .status(403)
+    //   .json({ error: "You are not authorized to add menu items." });
   }
 });
 
