@@ -457,7 +457,7 @@ paths:
         500:
           description: Internal server error
 
-  /add-menu-rating/{id}:
+  /menuItems/rating/{id}:
     post:
       summary: Add a rating for a menu item
       tags:
