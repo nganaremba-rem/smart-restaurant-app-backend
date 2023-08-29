@@ -35,7 +35,10 @@ exports.deleteOrder = asyncHandler(async (req, res) => {
       throw new CustomError("You can't cancel order now!", 400);
     }
     await Order.findByIdAndDelete(req.params.id);
-    res.status(204);
+    const message = "order deleted successfully";
+    res.status(204).json({
+      message,
+    });
   }
   // waiter deletes the order
   else if (req.user && currentOrder.waiter == req.user._id) {
@@ -46,7 +49,10 @@ exports.deleteOrder = asyncHandler(async (req, res) => {
       throw new CustomError("You can't cancel the order now", 400);
     }
     await Order.findByIdAndDelete(req.params.id);
-    res.status(204);
+    const message = "order deleted successfully";
+    res.status(204).json({
+      message,
+    });
   }
   // chef deletes the order
   else if (
@@ -56,7 +62,10 @@ exports.deleteOrder = asyncHandler(async (req, res) => {
       currentOrder.status == "confirmed by chef")
   ) {
     await Order.findByIdAndDelete(req.params.id);
-    res.status(200);
+    const message = "order deleted successfully";
+    res.status(204).json({
+      message,
+    });
   } else {
     throw new CustomError("You can't cancel the order now", 403);
   }

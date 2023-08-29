@@ -628,7 +628,6 @@ paths:
       responses:
         204:
           description: Order deleted successfully
-                    description: Menu item deleted successfully
           content:
             application/json:
               schema:
@@ -636,7 +635,7 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "deleted order"
+                    example: "order deleted successfully"
         400:
           description: Bad request, order not found or invalid action
         403:
