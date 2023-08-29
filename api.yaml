@@ -331,6 +331,7 @@ paths:
         - Menu
       security:
         - BearerAuth: []
+      parameters:
         - name: price
           in: query
           description: Filter by price
