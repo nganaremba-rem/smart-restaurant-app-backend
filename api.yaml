@@ -63,14 +63,12 @@ components:
           example: 4.5
         menuId:
           type: string
-          format: uuid
           example: 605ac0e8c4a5b001e810f701
         review:
           type: string
           example: "Great dish!"
         reviewer:
           type: string
-          format: uuid
           example: 605ac0e8c4a5b001e810f702
       required:
         - rating
@@ -98,15 +96,12 @@ components:
       properties:
         user:
           type: string
-          format: uuid
           example: 605ac0e8c4a5b001e810f702
         waiter:
           type: string
-          format: uuid
           example: 605ac0e8c4a5b001e810f703
         chef:
           type: string
-          format: uuid
           example: 605ac0e8c4a5b001e810f704
         menuItems:
           type: array
@@ -115,7 +110,6 @@ components:
             properties:
               menuName:
                 type: string
-                format: uuid
                 example: 605ac0e8c4a5b001e810f705
               quantity:
                 type: number
@@ -415,7 +409,6 @@ paths:
           description: ID of the menu item to delete
           schema:
             type: string
-            format: uuid
       responses:
         204:
           description: Menu item deleted successfully
