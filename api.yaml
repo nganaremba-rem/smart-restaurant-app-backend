@@ -8,6 +8,10 @@ servers:
     description: Local Server
 
 components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
   schemas:
     User:
       type: object
@@ -196,6 +200,7 @@ components:
         - price
         - isVeg
 
+# Authentication APIs
 paths:
   /users/signup:
     post:
@@ -324,14 +329,8 @@ paths:
       summary: Get menu items
       tags:
         - Menu
-      parameters:
-        - name: authorization
-          in: header
-          description: an authorization header (Must start with Bearer)
-          required: true
-          schema:
-            type: string
-          example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.VsJ8mMxEOZ03QYwVHtJ7oNicP9JqQn9kU0mwN2i5ZMg
+      security:
+        - BearerAuth: []
         - name: price
           in: query
           description: Filter by price

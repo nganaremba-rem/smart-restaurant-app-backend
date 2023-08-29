@@ -20,8 +20,9 @@ exports.authenticate = asyncHandler(async (req, res, next) => {
     const decoded_token = jwt.verify(token, process.env.JWT_SECRET);
     req.user = await User.findById(decoded_token.id).select("-password");
     next();
+  } else {
+    throw new CustomError("Unauthenticated user", 401);
   }
-  throw new CustomError("Unauthenticated user", 401);
 });
 
 exports.signup = asyncHandler(async (req, res) => {
@@ -68,7 +69,6 @@ exports.signin = asyncHandler(async (req, res) => {
       token: generateToken(user._id),
     });
   } else {
-    res.status(401);
     throw new CustomError("Invalid email or password", 409);
   }
 });
