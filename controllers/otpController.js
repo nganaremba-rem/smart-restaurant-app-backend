@@ -3,6 +3,7 @@ const User = require("../models/userModel");
 const Mailer = require("../mailer");
 const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
+const CustomError = require("../customError");
 
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -35,23 +36,20 @@ exports.sendOtp = asyncHandler(async (email) => {
 });
 
 exports.verifyOtp = asyncHandler(async (req, res) => {
-  const { firstName, lastName, role, email, password, enteredOTP } = req.body;
-  if (!email || !enteredOTP || !password || !lastName || !firstName || !role) {
-    throw new Error("");
+  const { email, enteredOTP } = req.body;
+  if (!email || !enteredOTP) {
+    throw new CustomError("Please enter OTP and email", 400);
   }
   const arr = await OTP.find({ email }).sort({ createdAt: -1 });
   const storedOtp = arr[0];
   if (!storedOtp) {
-    throw new Error("Something went wrong");
+    throw new CustomError("Something went wrong");
   }
   if (storedOtp.code == enteredOTP) {
-    const newUser = await User.create({
-      firstName,
-      lastName,
-      role,
-      email,
-      password,
-    });
+    const newUser = await User.findOneAndUpdate(
+      { email },
+      { isVerified: true }
+    );
     res.status(201).json({
       _id: newUser._id,
       firstName: newUser.firstName,
@@ -61,8 +59,6 @@ exports.verifyOtp = asyncHandler(async (req, res) => {
       token: generateToken(newUser._id),
     });
   } else {
-    const error = new Error("Incorrect OTP");
-    error.statusCode = 400;
-    throw error;
+    throw new CustomError("incorrect OTP", 400);
   }
 });

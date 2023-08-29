@@ -64,6 +64,6 @@ const getMenuRating = asyncHandler(async (menuId) => {
       };
     }
   } else {
-    throw new CustomError("Please provide menu ID");
+    throw new CustomError("Please provide menu ID", 400);
   }
 });

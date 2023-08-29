@@ -33,6 +33,10 @@ const userSchema = new mongoose.Schema({
     required: true,
     default: 0,
   },
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 userSchema.pre("save", async function (next) {
