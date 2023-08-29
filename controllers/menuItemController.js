@@ -57,7 +57,7 @@ exports.deleteMenuItem = asyncHandler(async (req, res) => {
       message,
     });
   } else {
-    throw new CustomError("You are not allowed to delete menu items.", 403);
+    throw new CustomError("You are not allowed to delete menu items.", 400);
   }
 });
 

@@ -415,7 +415,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MenuItem"
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "deleted ItemName from menu"
+
         403:
           description: Forbidden, user not allowed to delete menu items
         500:
@@ -623,6 +628,15 @@ paths:
       responses:
         204:
           description: Order deleted successfully
+                    description: Menu item deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "deleted order"
         400:
           description: Bad request, order not found or invalid action
         403:
