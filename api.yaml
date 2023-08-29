@@ -380,14 +380,8 @@ paths:
       summary: Add a new menu item
       tags:
         - Menu
-      parameters:
-        - name: authorization
-          in: header
-          description: an authorization header (Must start with Bearer)
-          required: true
-          schema:
-            type: string
-          example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.VsJ8mMxEOZ03QYwVHtJ7oNicP9JqQn9kU0mwN2i5ZMg
+      security:
+        - BearerAuth: []
       requestBody:
         required: true
         content:
@@ -411,14 +405,9 @@ paths:
       summary: Delete a menu item by ID
       tags:
         - Menu
+      security:
+        - BearerAuth: []
       parameters:
-        - name: authorization
-          in: header
-          description: an authorization header (Must start with Bearer)
-          required: true
-          schema:
-            type: string
-          example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.VsJ8mMxEOZ03QYwVHtJ7oNicP9JqQn9kU0mwN2i5ZMg
         - name: id
           in: path
           required: true
@@ -438,14 +427,9 @@ paths:
       summary: Update a menu item by ID
       tags:
         - Menu
+      security:
+        - BearerAuth: []
       parameters:
-        - name: authorization
-          in: header
-          description: an authorization header (Must start with Bearer)
-          required: true
-          schema:
-            type: string
-          example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.VsJ8mMxEOZ03QYwVHtJ7oNicP9JqQn9kU0mwN2i5ZMg
         - name: id
           in: path
           required: true
@@ -475,14 +459,9 @@ paths:
       summary: Add a rating for a menu item
       tags:
         - Menu
+      security:
+        - BearerAuth: []
       parameters:
-        - name: authorization
-          in: header
-          description: an authorization header (Must start with Bearer)
-          required: true
-          schema:
-            type: string
-          example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.VsJ8mMxEOZ03QYwVHtJ7oNicP9JqQn9kU0mwN2i5ZMg
         - name: id
           in: path
           required: true
@@ -526,14 +505,9 @@ paths:
       summary: Get orders
       tags:
         - Orders
+      security:
+        - BearerAuth: []
       parameters:
-        - name: authorization
-          in: header
-          description: an authorization header (Must start with Bearer)
-          required: true
-          schema:
-            type: string
-          example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.VsJ8mMxEOZ03QYwVHtJ7oNicP9JqQn9kU0mwN2i5ZMg
         - name: user
           in: query
           description: Filter orders by user ID
@@ -581,14 +555,8 @@ paths:
       summary: Create a new order
       tags:
         - Orders
-      parameters:
-        - name: authorization
-          in: header
-          description: an authorization header (Must start with Bearer)
-          required: true
-          schema:
-            type: string
-          example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.VsJ8mMxEOZ03QYwVHtJ7oNicP9JqQn9kU0mwN2i5ZMg
+      security:
+        - BearerAuth: []
       requestBody:
         required: true
         content:
@@ -612,14 +580,9 @@ paths:
       summary: Update an order by ID
       tags:
         - Orders
+      security:
+        - BearerAuth: []
       parameters:
-        - name: authorization
-          in: header
-          description: an authorization header (Must start with Bearer)
-          required: true
-          schema:
-            type: string
-          example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.VsJ8mMxEOZ03QYwVHtJ7oNicP9JqQn9kU0mwN2i5ZMg
         - name: id
           in: path
           required: true
@@ -650,14 +613,9 @@ paths:
       summary: Delete an order by ID
       tags:
         - Orders
+      security:
+        - BearerAuth: []
       parameters:
-        - name: authorization
-          in: header
-          description: an authorization header (Must start with Bearer)
-          required: true
-          schema:
-            type: string
-          example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.VsJ8mMxEOZ03QYwVHtJ7oNicP9JqQn9kU0mwN2i5ZMg
         - name: id
           in: path
           required: true
