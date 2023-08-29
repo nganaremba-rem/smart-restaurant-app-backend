@@ -1,0 +1,681 @@
+openapi: 3.0.0
+info:
+  title: Smart Restaurant Appp API
+  version: 1.0.0
+  description: RnD project REST APIs
+basePath: "/api/v1"
+schemes:
+  - "http"
+  - "https"
+
+servers:
+  - url: http://localhost:8000
+    description: Local Server
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        firstName:
+          type: string
+          example: Mandar
+        lastName:
+          type: string
+          example: Deshpande
+        email:
+          type: string
+          example: 210010014@iitdh.ac.in
+          unique: true
+        password:
+          type: string
+          example: pass1234
+        role:
+          type: string
+          enum:
+            - customer
+            - waiter
+            - chef
+            - manager
+            - admin
+            - owner
+          example: customer
+        pointCashBack:
+          type: number
+          format: float
+          example: 0.0
+        isVerified:
+          type: boolean
+          example: false
+      required:
+        - firstName
+        - lastName
+        - email
+        - password
+        - role
+    Rating:
+      type: object
+      properties:
+        rating:
+          type: number
+          format: float
+          minimum: 1
+          maximum: 5
+          example: 4.5
+        menuId:
+          type: string
+          format: uuid
+          example: 605ac0e8c4a5b001e810f701
+        review:
+          type: string
+          example: "Great dish!"
+        reviewer:
+          type: string
+          format: uuid
+          example: 605ac0e8c4a5b001e810f702
+      required:
+        - rating
+        - menuId
+        - reviewer
+    Otp:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          example: example@example.com
+        code:
+          type: string
+          example: 123456
+        createdAt:
+          type: string
+          format: date-time
+          example: "2023-08-29T12:34:56Z"
+      required:
+        - email
+        - code
+    Order:
+      type: object
+      properties:
+        user:
+          type: string
+          format: uuid
+          example: 605ac0e8c4a5b001e810f702
+        waiter:
+          type: string
+          format: uuid
+          example: 605ac0e8c4a5b001e810f703
+        chef:
+          type: string
+          format: uuid
+          example: 605ac0e8c4a5b001e810f704
+        menuItems:
+          type: array
+          items:
+            type: object
+            properties:
+              menuName:
+                type: string
+                format: uuid
+                example: 605ac0e8c4a5b001e810f705
+              quantity:
+                type: number
+                format: float
+                minimum: 1
+                example: 2
+          example:
+            - menuName: 605ac0e8c4a5b001e810f705
+              quantity: 2
+        totalAmount:
+          type: number
+          format: float
+          example: 25.5
+        createdAt:
+          type: string
+          format: date-time
+          example: "2023-08-29T12:34:56Z"
+        tableNumber:
+          type: string
+          example: "Table 3"
+        status:
+          type: string
+          enum:
+            - pending
+            - confirmed by waiter
+            - confirmed by chef
+            - order is ready
+            - payment done
+          example: "pending"
+      required:
+        - user
+        - menuItems
+        - totalAmount
+        - tableNumber
+    MenuItem:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Veggie Burger"
+        price:
+          type: number
+          format: float
+          example: 7.99
+        isVeg:
+          type: boolean
+          example: true
+        cuisine:
+          type: string
+          example: "American"
+        description:
+          type: string
+          example: "A delicious and healthy veggie burger."
+        spicinessLevel:
+          type: number
+          format: float
+          minimum: 1
+          maximum: 3
+          example: 2
+        preparationTime:
+          type: number
+          example: 20
+        calories:
+          type: number
+          example: 300
+        availability:
+          type: boolean
+          example: true
+        createdAt:
+          type: string
+          format: date-time
+          example: "2023-08-29T12:34:56Z"
+        averageRating:
+          type: number
+          format: float
+          example: 4.2
+        numberOfRatings:
+          type: number
+          example: 25
+      required:
+        - name
+        - price
+        - isVeg
+
+paths:
+  /users/signup:
+    post:
+      summary: Register a new user
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        201:
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  firstName:
+                    type: string
+                  lastName:
+                    type: string
+                  role:
+                    type: string
+                  email:
+                    type: string
+        400:
+          description: Bad request
+        401:
+          description: Account with this email already exists or is not verified
+        500:
+          description: Internal server error
+
+  /users/verify-otp:
+    post:
+      summary: Verify OTP and update user's verification status
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: example@example.com
+                enteredOTP:
+                  type: string
+                  example: 123456
+      responses:
+        201:
+          description: OTP verified successfully, user's verification status updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                  firstName:
+                    type: string
+                  lastName:
+                    type: string
+                  role:
+                    type: string
+                  email:
+                    type: string
+                  token:
+                    type: string
+        400:
+          description: Bad request or incorrect OTP
+        500:
+          description: Internal server error
+
+  /users/signin:
+    post:
+      summary: User sign-in
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: example@example.com
+                password:
+                  type: string
+                  example: yourpassword
+      responses:
+        200:
+          description: User sign-in successful, returns user information and token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                  firstName:
+                    type: string
+                  lastName:
+                    type: string
+                  email:
+                    type: string
+                  role:
+                    type: string
+                  token:
+                    type: string
+        401:
+          description: Unauthorized, invalid email or password
+        409:
+          description: Conflict, account not verified or incorrect password
+  #  Menu APIs
+  /menuItems:
+    get:
+      summary: Get menu items
+      tags:
+        - Menu
+      parameters:
+        - name: authorization
+          in: header
+          description: an authorization header (Must start with Bearer)
+          required: true
+          schema:
+            type: string
+          example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.VsJ8mMxEOZ03QYwVHtJ7oNicP9JqQn9kU0mwN2i5ZMg
+        - name: price
+          in: query
+          description: Filter by price
+          schema:
+            type: float
+        - name: isVeg
+          in: query
+          description: Filter by veg/ non-veg
+          schema:
+            type: boolean
+        - name: cuisine
+          in: query
+          description: Filter by cuisine
+          schema:
+            type: string
+        - name: spicinessLevel
+          in: query
+          description: Filter by spice level(1 to 3)
+          schema:
+            type: integer
+        - name: preparationTime
+          in: query
+          description: Filter by preparation time
+          schema:
+            type: integer
+        - name: averageRating
+          description: Filter by avg. rating
+          schema:
+            type: float
+        - name: calories
+          description: Filter by calories
+          schema:
+            type: float
+      responses:
+        200:
+          description: Successfully retrieved menu items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MenuItem"
+        500:
+          description: Internal server error
+
+    post:
+      summary: Add a new menu item
+      tags:
+        - Menu
+      parameters:
+        - name: authorization
+          in: header
+          description: an authorization header (Must start with Bearer)
+          required: true
+          schema:
+            type: string
+          example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.VsJ8mMxEOZ03QYwVHtJ7oNicP9JqQn9kU0mwN2i5ZMg
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MenuItem"
+      responses:
+        201:
+          description: New menu item added successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MenuItem"
+        400:
+          description: Bad request, user not allowed to add menu items
+        500:
+          description: Internal server error
+
+  /menuItems/{id}:
+    delete:
+      summary: Delete a menu item by ID
+      tags:
+        - Menu
+      parameters:
+        - name: authorization
+          in: header
+          description: an authorization header (Must start with Bearer)
+          required: true
+          schema:
+            type: string
+          example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.VsJ8mMxEOZ03QYwVHtJ7oNicP9JqQn9kU0mwN2i5ZMg
+        - name: id
+          in: path
+          required: true
+          description: ID of the menu item to delete
+          schema:
+            type: string
+            format: uuid
+      responses:
+        204:
+          description: Menu item deleted successfully
+        403:
+          description: Forbidden, user not allowed to delete menu items
+        500:
+          description: Internal server error
+
+    patch:
+      summary: Update a menu item by ID
+      tags:
+        - Menu
+      parameters:
+        - name: authorization
+          in: header
+          description: an authorization header (Must start with Bearer)
+          required: true
+          schema:
+            type: string
+          example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.VsJ8mMxEOZ03QYwVHtJ7oNicP9JqQn9kU0mwN2i5ZMg
+        - name: id
+          in: path
+          required: true
+          description: ID of the menu item to update
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MenuItem"
+      responses:
+        201:
+          description: Menu item updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MenuItem"
+        403:
+          description: Forbidden, user not allowed to update menu items
+        500:
+          description: Internal server error
+
+  /add-menu-rating/{id}:
+    post:
+      summary: Add a rating for a menu item
+      tags:
+        - Menu
+      parameters:
+        - name: authorization
+          in: header
+          description: an authorization header (Must start with Bearer)
+          required: true
+          schema:
+            type: string
+          example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.VsJ8mMxEOZ03QYwVHtJ7oNicP9JqQn9kU0mwN2i5ZMg
+        - name: id
+          in: path
+          required: true
+          description: ID of the menu item to rate
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rating:
+                  type: number
+                  format: float
+                  minimum: 1
+                  maximum: 5
+                  example: 4.5
+                review:
+                  type: string
+                  example: "Great dish!"
+      responses:
+        200:
+          description: Rating added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Thanks for your feedback"
+        403:
+          description: Forbidden, user not allowed to give rating
+        500:
+          description: Internal server error
+  # Orders API
+  /orders:
+    get:
+      summary: Get orders
+      tags:
+        - Orders
+      parameters:
+        - name: authorization
+          in: header
+          description: an authorization header (Must start with Bearer)
+          required: true
+          schema:
+            type: string
+          example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.VsJ8mMxEOZ03QYwVHtJ7oNicP9JqQn9kU0mwN2i5ZMg
+        - name: user
+          in: query
+          description: Filter orders by user ID
+          schema:
+            type: string
+        - name: chef
+          in: query
+          description: Filter orders by chef ID
+          schema:
+            type: string
+        - name: waiter
+          in: query
+          description: Filter orders by waiter ID
+          schema:
+            type: string
+        - name: createdAt
+          in: query
+          description: Filter orders by creation date
+          schema:
+            type: string
+            format: date-time
+        - name: tableNumber
+          in: query
+          description: Filter orders by table number
+          schema:
+            type: string
+        - name: status
+          in: query
+          description: Filter orders by status
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successfully retrieved orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Order"
+        500:
+          description: Internal server error
+
+    post:
+      summary: Create a new order
+      tags:
+        - Orders
+      parameters:
+        - name: authorization
+          in: header
+          description: an authorization header (Must start with Bearer)
+          required: true
+          schema:
+            type: string
+          example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.VsJ8mMxEOZ03QYwVHtJ7oNicP9JqQn9kU0mwN2i5ZMg
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Order"
+      responses:
+        201:
+          description: Order created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        403:
+          description: Forbidden, user not allowed to place an order
+        500:
+          description: Internal server error
+
+  /orders/{id}:
+    patch:
+      summary: Update an order by ID
+      tags:
+        - Orders
+      parameters:
+        - name: authorization
+          in: header
+          description: an authorization header (Must start with Bearer)
+          required: true
+          schema:
+            type: string
+          example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.VsJ8mMxEOZ03QYwVHtJ7oNicP9JqQn9kU0mwN2i5ZMg
+        - name: id
+          in: path
+          required: true
+          description: ID of the order to update
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Order"
+      responses:
+        201:
+          description: Order updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        400:
+          description: Bad request, order not found or invalid action
+        403:
+          description: Forbidden, user not allowed to update this order
+        500:
+          description: Internal server error
+
+    delete:
+      summary: Delete an order by ID
+      tags:
+        - Orders
+      parameters:
+        - name: authorization
+          in: header
+          description: an authorization header (Must start with Bearer)
+          required: true
+          schema:
+            type: string
+          example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.VsJ8mMxEOZ03QYwVHtJ7oNicP9JqQn9kU0mwN2i5ZMg
+        - name: id
+          in: path
+          required: true
+          description: ID of the order to delete
+          schema:
+            type: string
+      responses:
+        204:
+          description: Order deleted successfully
+        400:
+          description: Bad request, order not found or invalid action
+        403:
+          description: Forbidden, user not allowed to delete this order
+        500:
+          description: Internal server error

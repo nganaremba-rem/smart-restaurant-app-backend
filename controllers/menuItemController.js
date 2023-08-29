@@ -65,12 +65,14 @@ exports.updateMenuItem = asyncHandler(async (req, res) => {
       req.user.role == "admin" ||
       req.user.role == "owner")
   ) {
-    const newMenuItem = await MenuItem.findById(req.params.id);
+    const newMenuItem = await MenuItem.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
     if (!newMenuItem) {
       throw new CustomError("Failed to update this Item", 500);
     }
-    newMenuItem.set(req.body);
-    await newMenuItem.save();
     res.status(201).json(newMenuItem);
   } else {
     throw new CustomError("You are not allowed to update menu items.", 403);

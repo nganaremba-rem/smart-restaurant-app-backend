@@ -21,9 +21,7 @@ exports.authenticate = asyncHandler(async (req, res, next) => {
     req.user = await User.findById(decoded_token.id).select("-password");
     next();
   }
-  const error = new Error("Unauthenticated user");
-  error.statusCode = 401;
-  throw error;
+  throw new CustomError("Unauthenticated user", 401);
 });
 
 exports.signup = asyncHandler(async (req, res) => {
@@ -39,7 +37,7 @@ exports.signup = asyncHandler(async (req, res) => {
     );
   }
   if (sendOtp(email)) {
-    let newUser = await User.create({
+    await User.create({
       firstName,
       lastName,
       role,

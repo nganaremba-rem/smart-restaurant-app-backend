@@ -3,11 +3,13 @@ const cors = require("cors");
 const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const helmet = require("helmet");
+const yaml = require("yamljs");
+const swaggerUI = require("swagger-ui-express");
+const swaggerJsDoc = yaml.load("./api.yaml");
 const rateLimit = require("express-rate-limit");
 const userRouter = require("./routes/userRoutes");
 const menuItemRouter = require("./routes/menuItemRoutes");
 const orderRouter = require("./routes/orderRoutes");
-const ratingRouter = require("./routes/ratingRoutes");
 const errorController = require("./controllers/errorController");
 const app = express();
 
@@ -34,9 +36,10 @@ app.use(xss());
 
 // Basic security headers
 app.use(helmet());
+
+app.use("/api/v1/docs", swaggerUI.serve, swaggerUI.setup(swaggerJsDoc));
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/menuItems", menuItemRouter);
 app.use("/api/v1/orders", orderRouter);
-app.use("/api/v1/ratings", ratingRouter);
 app.use(errorController);
 module.exports = app;
