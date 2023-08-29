@@ -52,7 +52,10 @@ exports.deleteMenuItem = asyncHandler(async (req, res) => {
     if (!newMenuItem) {
       throw new CustomError("Failed to delete this Item", 500);
     }
-    res.status(204);
+    const message = "deleted " + newMenuItem.name + " from menu";
+    res.status(204).json({
+      message,
+    });
   } else {
     throw new CustomError("You are not allowed to delete menu items.", 403);
   }

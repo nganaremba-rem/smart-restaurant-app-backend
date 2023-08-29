@@ -412,6 +412,10 @@ paths:
       responses:
         204:
           description: Menu item deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MenuItem"
         403:
           description: Forbidden, user not allowed to delete menu items
         500:
