@@ -29,19 +29,16 @@ exports.deleteOrder = asyncHandler(async (req, res) => {
   if (
     req.user &&
     req.user.role == "customer" &&
-    currentOrder.user == req.user._id
+    currentOrder.user.toString() == req.user._id
   ) {
     if (currentOrder.status != "pending") {
       throw new CustomError("You can't cancel order now!", 400);
     }
     await Order.findByIdAndDelete(req.params.id);
-    const message = "order deleted successfully";
-    res.status(204).json({
-      message,
-    });
+    res.status(204).json();
   }
   // waiter deletes the order
-  else if (req.user && currentOrder.waiter == req.user._id) {
+  else if (req.user && currentOrder.waiter.toString() == req.user._id) {
     if (
       currentOrder.status != "pending" &&
       currentOrder.status != "confirmed by waiter"
@@ -49,23 +46,18 @@ exports.deleteOrder = asyncHandler(async (req, res) => {
       throw new CustomError("You can't cancel the order now", 400);
     }
     await Order.findByIdAndDelete(req.params.id);
-    const message = "order deleted successfully";
-    res.status(204).json({
-      message,
-    });
+    res.status(204).json();
   }
   // chef deletes the order
   else if (
     req.user &&
-    currentOrder.chef == req.user._id &&
+    currentOrder.chef.toString() == req.user._id &&
     (currentOrder.status == "confirmed by waiter" ||
       currentOrder.status == "confirmed by chef")
   ) {
     await Order.findByIdAndDelete(req.params.id);
     const message = "order deleted successfully";
-    res.status(204).json({
-      message,
-    });
+    res.status(204).json();
   } else {
     throw new CustomError("You can't cancel the order now", 403);
   }
@@ -81,13 +73,17 @@ exports.updateOrder = asyncHandler(async (req, res) => {
   // customer can update his order if it is in pending state
   if (req.user && req.user.role == "customer") {
     // ensuring if customer who created this order is updating and waiter hasn't confirmed it yet
-    if (currentOrder.status == "pending" && currentOrder.user == req.user._id) {
+    if (
+      currentOrder.status == "pending" &&
+      currentOrder.user.toString() == req.user._id
+    ) {
       req.body.status = "pending";
       currentOrder.set(req.body);
       await currentOrder.save();
       res.status(201).json(currentOrder);
+    } else {
+      throw new CustomError("You can't change the order now, call waiter", 400);
     }
-    throw new CustomError("You can't change the order now, call waiter", 400);
   }
 
   // waiter will go to that table number and click on confirm button
@@ -121,9 +117,9 @@ exports.updateOrder = asyncHandler(async (req, res) => {
 // /api/v1/orders?status=pending
 exports.getOrders = asyncHandler(async (req, res) => {
   if (!req.user) {
-    throw new CustomError("You are not alllowed to view the orders");
+    throw new CustomError("You are not alllowed to view the orders", 404);
   }
-  const features = new APIFeatures(MenuItem.find(), req.query)
+  const features = new APIFeatures(Order.find(), req.query)
     .filter()
     .sort()
     .limitFields()

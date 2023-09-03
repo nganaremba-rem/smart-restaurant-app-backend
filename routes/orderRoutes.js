@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const orderController = require("../controllers/orderController");
+const authController = require("../controllers/authController");
+router.use(authController.authenticate);
 router
   .route("/")
   .get(orderController.getOrders)
