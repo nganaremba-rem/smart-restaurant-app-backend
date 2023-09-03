@@ -44,6 +44,8 @@ exports.signup = asyncHandler(async (req, res) => {
       role,
       email,
       password,
+      isVerified: false,
+      pointCashBack: 0,
     });
     res.status(201).json({
       firstName,

@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: Smart Restaurant Appp API
+  title: Smart Restaurant App API
   version: 1.0.0
   description: RnD project REST APIs
 servers:

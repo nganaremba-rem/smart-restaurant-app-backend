@@ -68,6 +68,9 @@ exports.updateMenuItem = asyncHandler(async (req, res) => {
       req.user.role == "admin" ||
       req.user.role == "owner")
   ) {
+    if (req.body && req.body.averageRating && req.body.numberOfRatings) {
+      throw new CustomError("you can't alter customer ratings", 404);
+    }
     const newMenuItem = await MenuItem.findByIdAndUpdate(
       req.params.id,
       req.body,
