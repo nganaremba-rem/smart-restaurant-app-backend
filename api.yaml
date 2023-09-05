@@ -642,3 +642,68 @@ paths:
           description: Forbidden, user not allowed to delete this order
         500:
           description: Internal server error
+  /calculateTotal/{id}:
+    get:
+      tags:
+        - Orders
+      summary: Calculate Total for One Order
+      description: Retrieves the total amount for a specific order based on its ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The ID of the order to calculate the total for.
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful response with the total amount.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalAmount:
+                    type: number
+                    description: The total amount for the order.
+        404:
+          description: Order not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message indicating that the order was not found.
+      security:
+        - BearerAuth: []
+  /orders/calculateTotal:
+    get:
+      tags:
+        - Orders
+      summary: Calculate Total for Customer's Orders
+      description: Retrieves the total amount for all unpaid orders of the authenticated customer.
+      responses:
+        200:
+          description: Successful response with the total amount.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalAmount:
+                    type: number
+                    description: The total amount for the customer's unpaid orders.
+        404:
+          description: No orders found for the customer.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Error message indicating that no orders were found for the customer.
+      security:
+        - BearerAuth: []
