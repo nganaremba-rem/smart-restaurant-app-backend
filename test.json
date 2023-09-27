@@ -1,0 +1,14 @@
+{
+    "name": "Veggie Burger",
+    "price": 7.99,
+    "isVeg": true,
+    "cuisine": "American",
+    "description": "A delicious and healthy veggie burger.",
+    "spicinessLevel": 2,
+    "preparationTime": 20,
+    "calories": 300,
+    "availability": true,
+    "createdAt": "2023-08-29T12:34:56Z",
+    "averageRating": 4.2,
+    "numberOfRatings": 25
+  }
