@@ -125,6 +125,9 @@ exports.getOrders = asyncHandler(async (req, res) => {
     .limitFields()
     .paginate();
   let orders = [];
-  orders = await features.query.find();
+  orders = await features.query.find().populate({
+    path: "menuItems.menuName", // Populate the 'menuName' field with MenuItem data
+    select: "name price isVeg", // Select the fields you want from the MenuItem
+  });
   res.status(200).json(orders);
 });
