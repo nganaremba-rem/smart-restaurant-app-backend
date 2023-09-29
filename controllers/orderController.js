@@ -101,7 +101,7 @@ exports.updateOrder = asyncHandler(async (req, res) => {
   // master chef will click on preparation started button
   // You should pass status key in the body for calling this API
   else if (req.user && req.user.role == "chef") {
-    if (currentOrder.status == "confirmed by waiter") {
+    if (currentOrder.status == "confirmed by chef") {
       throw new CustomError("Other chef has started the preparation");
     }
     req.body.chef = req.user._id;
