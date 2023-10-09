@@ -13,6 +13,7 @@ const menuSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
   averageRating: { type: Number, default: 0 },
   numberOfRatings: { type: Number, default: 0 },
+  imageURL: { type: String },
 });
 
 const MenuItem = mongoose.model("MenuItem", menuSchema);
