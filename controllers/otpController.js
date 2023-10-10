@@ -37,7 +37,7 @@ exports.sendOtp = asyncHandler(async (email) => {
 
 exports.verifyOtp = asyncHandler(async (req, res) => {
   const { email, enteredOTP } = req.body;
-  if (!email || !enteredOTP) {
+  if (email.length === 0 || !enteredOTP === 0) {
     throw new CustomError("Please enter OTP and email", 400);
   }
   const arr = await OTP.find({ email }).sort({ createdAt: -1 });
@@ -56,6 +56,7 @@ exports.verifyOtp = asyncHandler(async (req, res) => {
       lastName: newUser.lastName,
       role: newUser.role,
       email: newUser.email,
+      isVerified: newUser.isVerified,
       token: generateToken(newUser._id),
     });
   } else {

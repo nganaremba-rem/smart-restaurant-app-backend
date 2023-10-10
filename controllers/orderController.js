@@ -41,7 +41,7 @@ exports.deleteOrder = asyncHandler(async (req, res) => {
   else if (req.user && currentOrder.waiter.toString() == req.user._id) {
     if (
       currentOrder.status != "pending" &&
-      currentOrder.status != "confirmed by waiter"
+      currentOrder.status != "confirmed_by_waiter"
     ) {
       throw new CustomError("You can't cancel the order now", 400);
     }
@@ -52,8 +52,8 @@ exports.deleteOrder = asyncHandler(async (req, res) => {
   else if (
     req.user &&
     currentOrder.chef.toString() == req.user._id &&
-    (currentOrder.status == "confirmed by waiter" ||
-      currentOrder.status == "confirmed by chef")
+    (currentOrder.status == "confirmed_by_waiter" ||
+      currentOrder.status == "confirmed_by_chef")
   ) {
     await Order.findByIdAndDelete(req.params.id);
     const message = "order deleted successfully";
@@ -88,11 +88,11 @@ exports.updateOrder = asyncHandler(async (req, res) => {
 
   // waiter will go to that table number and click on confirm button
   else if (req.user && req.user.role == "waiter") {
-    if (currentOrder.status == "confirmed by waiter") {
+    if (currentOrder.status == "confirmed_by_waiter") {
       throw new CustomError("Other waiter has picked up this order", 400);
     }
     req.body.waiter = req.user._id;
-    req.body.status = "confirmed by waiter";
+    req.body.status = "confirmed_by_waiter";
     currentOrder.set(req.body);
     await currentOrder.save();
     res.status(201).json(currentOrder);
@@ -102,8 +102,8 @@ exports.updateOrder = asyncHandler(async (req, res) => {
   // You should pass status key in the body for calling this API
   else if (req.user && req.user.role == "chef") {
     if (
-      currentOrder.status == "confirmed by chef" ||
-      currentOrder.status == "order is ready"
+      currentOrder.status == "confirmed_by_chef" ||
+      currentOrder.status == "order_is_ready"
     ) {
       throw new CustomError("Other chef has started the preparation");
     }

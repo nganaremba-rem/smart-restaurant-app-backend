@@ -18,7 +18,11 @@ exports.authenticate = asyncHandler(async (req, res, next) => {
   ) {
     token = req.headers.authorization.split(" ")[1];
     const decoded_token = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = await User.findById(decoded_token.id).select("-password");
+    const user = await User.findById(decoded_token.id).select("-password");
+    if (!user.isVerified) {
+      throw new CustomError("Unauthenticated user", 401);
+    }
+    req.user = user;
   } else {
     throw new CustomError("Unauthenticated user", 401);
   }
