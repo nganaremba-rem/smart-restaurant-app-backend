@@ -7,7 +7,6 @@ const ratingSchema = new mongoose.Schema({
     ref: "MenuItem",
     required: true,
   },
-  review: { type: String, default: null },
   reviewer: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",

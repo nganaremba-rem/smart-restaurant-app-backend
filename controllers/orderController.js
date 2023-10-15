@@ -38,10 +38,10 @@ exports.deleteOrder = asyncHandler(async (req, res) => {
     res.status(204).json();
   }
   // waiter deletes the order
-  else if (req.user && currentOrder.waiter.toString() == req.user._id) {
+  else if (req.user && req.user.role === "waiter") {
     if (
-      currentOrder.status != "pending" &&
-      currentOrder.status != "confirmed_by_waiter"
+      currentOrder.status !== "pending" &&
+      currentOrder.status !== "confirmed_by_waiter"
     ) {
       throw new CustomError("You can't cancel the order now", 400);
     }
@@ -81,6 +81,10 @@ exports.updateOrder = asyncHandler(async (req, res) => {
       currentOrder.set(req.body);
       await currentOrder.save();
       res.status(201).json(currentOrder);
+    } else if (currentOrder.status === "payment_done") {
+      currentOrder.set(req.body);
+      await currentOrder.save();
+      res.status(201).json(currentOrder);
     } else {
       throw new CustomError("You can't change the order now, call waiter", 400);
     }
@@ -88,7 +92,10 @@ exports.updateOrder = asyncHandler(async (req, res) => {
 
   // waiter will go to that table number and click on confirm button
   else if (req.user && req.user.role == "waiter") {
-    if (currentOrder.status == "confirmed_by_waiter") {
+    if (
+      currentOrder.waiter &&
+      currentOrder.waiter.toString() !== req.user._id.toString()
+    ) {
       throw new CustomError("Other waiter has picked up this order", 400);
     }
     req.body.waiter = req.user._id;
@@ -102,8 +109,8 @@ exports.updateOrder = asyncHandler(async (req, res) => {
   // You should pass status key in the body for calling this API
   else if (req.user && req.user.role == "chef") {
     if (
-      currentOrder.status == "confirmed_by_chef" ||
-      currentOrder.status == "order_is_ready"
+      currentOrder.chef &&
+      currentOrder.chef.toString() !== req.user._id.toString()
     ) {
       throw new CustomError("Other chef has started the preparation");
     }
@@ -133,4 +140,16 @@ exports.getOrders = asyncHandler(async (req, res) => {
     select: "name price isVeg", // Select the fields you want from the MenuItem
   });
   res.status(200).json(orders);
+});
+
+exports.updatePaymentStatus = asyncHandler(async (customerId) => {
+  const query = {
+    user: customerId,
+    status: "order_is_ready",
+  };
+
+  const update = {
+    $set: { status: "payment_done" },
+  };
+  const result = await Order.updateMany(query, update);
 });

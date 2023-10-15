@@ -4,7 +4,7 @@ const menuSchema = new mongoose.Schema({
   name: { type: String, required: true, unique: true },
   price: { type: Number, required: true },
   isVeg: { type: Boolean, required: true },
-  cuisine: { type: String },
+  cuisine: { type: String, default: "other" },
   description: { type: String },
   spicinessLevel: { type: Number, min: 0, max: 3, default: 0 },
   preparationTime: { type: Number },

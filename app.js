@@ -10,9 +10,9 @@ const rateLimit = require("express-rate-limit");
 const userRouter = require("./routes/userRoutes");
 const menuItemRouter = require("./routes/menuItemRoutes");
 const orderRouter = require("./routes/orderRoutes");
+const paymentRouter = require("./payment");
 const errorController = require("./controllers/errorController");
 const app = express();
-
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000, //10 mins
   max: 150, // limit each IP to 150 requests per windowMs
@@ -41,5 +41,6 @@ app.use("/api/v1/docs", swaggerUI.serve, swaggerUI.setup(swaggerJsDoc));
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/menuItems", menuItemRouter);
 app.use("/api/v1/orders", orderRouter);
+app.use("/api/payment", paymentRouter);
 app.use(errorController);
 module.exports = app;

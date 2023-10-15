@@ -31,6 +31,7 @@ const orderSchema = new mongoose.Schema({
     ],
     default: "pending",
   },
+  isRated: { type: Boolean, default: false },
 });
 
 const Order = mongoose.model("Order", orderSchema);
