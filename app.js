@@ -1,8 +1,8 @@
 const express = require("express");
 const cors = require("cors");
-// const mongoSanitize = require("express-mongo-sanitize");
-// const xss = require("xss-clean");
-// const helmet = require("helmet");
+const mongoSanitize = require("express-mongo-sanitize");
+const xss = require("xss-clean");
+const helmet = require("helmet");
 const yaml = require("yamljs");
 const swaggerUI = require("swagger-ui-express");
 const swaggerJsDoc = yaml.load("./api.yaml");
@@ -29,13 +29,13 @@ app.use(
 app.use(express.json());
 
 // Data sanitization against NoSQL query injection
-// app.use(mongoSanitize());
+app.use(mongoSanitize());
 
 // Data sanitization against site script xss (e.g. removes HTML code from data)
-// app.use(xss());
+app.use(xss());
 
 // Basic security headers
-// app.use(helmet());
+app.use(helmet());
 
 app.use("/api/v1/docs", swaggerUI.serve, swaggerUI.setup(swaggerJsDoc));
 app.use("/api/v1/users", userRouter);
