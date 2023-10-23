@@ -15,7 +15,7 @@ exports.addMenuItem = asyncHandler(async (req, res) => {
     }
     res.status(201).json(newMenuItem);
   } else {
-    throw new CustomError("You are not allowed to add menu items", 400);
+    throw new CustomError("You are not allowed to add menu items", 403);
   }
 });
 
@@ -57,7 +57,7 @@ exports.deleteMenuItem = asyncHandler(async (req, res) => {
       message,
     });
   } else {
-    throw new CustomError("You are not allowed to delete menu items.", 400);
+    throw new CustomError("You are not allowed to delete menu items.", 403);
   }
 });
 
@@ -69,7 +69,7 @@ exports.updateMenuItem = asyncHandler(async (req, res) => {
       req.user.role == "owner")
   ) {
     if (req.body && req.body.averageRating && req.body.numberOfRatings) {
-      throw new CustomError("you can't alter customer ratings", 404);
+      throw new CustomError("you can't alter customer ratings", 405);
     }
     const newMenuItem = await MenuItem.findByIdAndUpdate(
       req.params.id,

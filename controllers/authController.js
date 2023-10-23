@@ -38,10 +38,12 @@ exports.signup = asyncHandler(async (req, res) => {
   if (user && user.isVerified) {
     throw new CustomError(
       "Account with this email already exists. Please SignIn",
-      401
+      409
     );
-  }
-  if (sendOtp(email)) {
+  } else if (user && !user.isVerified) {
+    sendOtp(email);
+    res.status(201).json(user);
+  } else if (!user && sendOtp(email)) {
     await User.create({
       firstName,
       lastName,
