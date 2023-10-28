@@ -17,7 +17,7 @@ io.on("connection", (socket) => {
   socket.on("join_waiters_room", (data) => {
     const { waiter } = data;
     const rooms = Object.keys(socket.rooms); // Get all rooms the socket has joined
-
+    console.log(rooms);
     if (!rooms.includes(waiter) && !rooms.includes("waiters_room")) {
       socket.join(waiter);
       socket.join("waiters_room");
@@ -30,6 +30,7 @@ io.on("connection", (socket) => {
   //done
   socket.on("join_chefs_room", (data) => {
     const rooms = Object.keys(socket.rooms); // Get all rooms the socket has joined
+    console.log(rooms);
     const { chef } = data;
     if (!rooms.includes(chef) && !rooms.includes("chefs_room")) {
       socket.join(`${chef}`);
@@ -43,6 +44,7 @@ io.on("connection", (socket) => {
   // done
   socket.on("join_customer_room", (data) => {
     const rooms = Object.keys(socket.rooms); // Get all rooms the socket has joined
+    console.log(rooms);
     const { customer } = data;
     if (!rooms.includes(customer)) {
       socket.join(`${customer}`);
