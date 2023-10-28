@@ -96,7 +96,7 @@ io.on("connection", (socket) => {
 
   socket.on("leave_all_rooms", () => {
     const rooms = Object.keys(socket.rooms);
-
+    console.log("looged out");
     // Leave each room
     rooms.forEach((room) => {
       if (room !== socket.id) {
