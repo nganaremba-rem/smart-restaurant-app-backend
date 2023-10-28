@@ -17,6 +17,8 @@ io.on("connection", (socket) => {
   socket.on("join_waiters_room", (data) => {
     const { waiter } = data;
     const rooms = Array.from(socket.rooms); // Get all rooms the socket has joined
+    console.log(rooms);
+
     if (!rooms.includes(waiter) && !rooms.includes("waiters_room")) {
       socket.join(waiter);
       socket.join("waiters_room");
