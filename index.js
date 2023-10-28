@@ -95,34 +95,9 @@ io.on("connection", (socket) => {
       .emit("chef_ended", `Order from table ${tableNumber} is ready`);
     console.log("order ready ", waiter, customer);
   });
-
-  socket.on("leave_all_rooms", async () => {
-    const rooms = Array.from(socket.rooms);
-    console.log(rooms);
-
-    for (const room of rooms) {
-      if (room !== socket.id) {
-        try {
-          await new Promise((resolve, reject) => {
-            socket.leave(room, (error) => {
-              if (error) {
-                console.error(`Error leaving room ${room}:`, error);
-                reject(error);
-              } else {
-                console.log(`Socket left room: ${room}`);
-                resolve();
-              }
-            });
-          });
-        } catch (error) {
-          // Handle potential errors if needed
-        }
-      }
-    }
-  });
 });
 
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 5000;
 server.listen(port, () => {
   console.log(`App running on port ${port}...`);
 });
