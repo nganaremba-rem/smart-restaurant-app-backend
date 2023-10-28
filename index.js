@@ -18,7 +18,7 @@ io.on("connection", (socket) => {
     const { waiter } = data;
     socket.join(`${waiter}`);
     socket.join("waiters_room");
-    // console.log("joined_waiters_room");
+    console.log("joined_waiters_room ", waiter);
   });
 
   //done
@@ -26,14 +26,14 @@ io.on("connection", (socket) => {
     const { chef } = data;
     socket.join(`${chef}`);
     socket.join("chefs_room");
-    // console.log("chef joined room: " + chef);
+    console.log("chef joined room: " + chef);
   });
 
   // done
   socket.on("join_customer_room", (data) => {
     const { customer } = data;
     socket.join(`${customer}`);
-    // console.log("customer joined room: " + customer);
+    console.log("customer joined room: " + customer);
   });
 
   // done
@@ -42,6 +42,7 @@ io.on("connection", (socket) => {
     socket
       .to("waiters_room")
       .emit("pick_order", `order placed from table no. ${tableNumber}`);
+    console.log("Order placed", tableNumber);
   });
 
   //done
@@ -54,6 +55,7 @@ io.on("connection", (socket) => {
         "waiter_confirmed",
         `Start preparation for table number ${tableNumber}`
       );
+    console.log("order confirmed notification sent to ", customer, tableNumber);
   });
 
   //done
@@ -62,6 +64,7 @@ io.on("connection", (socket) => {
     socket
       .to(`${customer}`)
       .emit("chef_started", "Chef started preparing your order");
+    console.log("preparation started", customer);
   });
 
   // done
@@ -71,6 +74,7 @@ io.on("connection", (socket) => {
     socket
       .to(`${waiter}`)
       .emit("chef_ended", `Order from table ${tableNumber} is ready`);
+    console.log("order ready ", waiter, customer);
   });
 });
 
