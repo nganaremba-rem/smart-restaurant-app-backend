@@ -96,22 +96,29 @@ io.on("connection", (socket) => {
     console.log("order ready ", waiter, customer);
   });
 
-  socket.on("leave_all_rooms", () => {
+  socket.on("leave_all_rooms", async () => {
     const rooms = Array.from(socket.rooms);
     console.log(rooms);
-    // Leave each room
-    rooms.forEach((room) => {
+
+    for (const room of rooms) {
       if (room !== socket.id) {
-        // Skip the default room, which is the socket's own room
-        socket.leave(room, (error) => {
-          if (error) {
-            console.error(`Error leaving room ${room}:`, error);
-          } else {
-            console.log(`Socket left room: ${room}`);
-          }
-        });
+        try {
+          await new Promise((resolve, reject) => {
+            socket.leave(room, (error) => {
+              if (error) {
+                console.error(`Error leaving room ${room}:`, error);
+                reject(error);
+              } else {
+                console.log(`Socket left room: ${room}`);
+                resolve();
+              }
+            });
+          });
+        } catch (error) {
+          // Handle potential errors if needed
+        }
       }
-    });
+    }
   });
 });
 
