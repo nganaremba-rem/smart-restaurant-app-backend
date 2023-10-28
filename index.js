@@ -17,11 +17,10 @@ io.on("connection", (socket) => {
   socket.on("join_waiters_room", (data) => {
     const { waiter } = data;
     const rooms = Object.keys(socket.rooms); // Get all rooms the socket has joined
-    console.log(rooms);
     if (!rooms.includes(waiter) && !rooms.includes("waiters_room")) {
       socket.join(waiter);
       socket.join("waiters_room");
-      console.log("joined_waiters_room ", waiter);
+      console.log("joined_waiters_room ", waiter, socket.rooms);
     } else {
       console.log("waiter Socket is already a member of this room");
     }
@@ -35,7 +34,7 @@ io.on("connection", (socket) => {
     if (!rooms.includes(chef) && !rooms.includes("chefs_room")) {
       socket.join(`${chef}`);
       socket.join("chefs_room");
-      console.log("chef joined room: " + chef);
+      console.log("chef joined room: " + chef, socket.rooms);
     } else {
       console.log("chef Socket is already a member of this room");
     }
@@ -48,7 +47,7 @@ io.on("connection", (socket) => {
     const { customer } = data;
     if (!rooms.includes(customer)) {
       socket.join(`${customer}`);
-      console.log("customer joined room: " + customer);
+      console.log("customer joined room: " + customer, socket.rooms);
     } else {
       console.log("customer Socket is already a member of this room");
     }
