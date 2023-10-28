@@ -76,6 +76,8 @@ io.on("connection", (socket) => {
       .emit("chef_ended", `Order from table ${tableNumber} is ready`);
     console.log("order ready ", waiter, customer);
   });
+
+  console.log(socket.rooms);
 });
 
 const port = process.env.PORT || 8000;
