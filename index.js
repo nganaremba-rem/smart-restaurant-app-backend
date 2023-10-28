@@ -93,6 +93,24 @@ io.on("connection", (socket) => {
       .emit("chef_ended", `Order from table ${tableNumber} is ready`);
     console.log("order ready ", waiter, customer);
   });
+
+  socket.on("leave_all_rooms", () => {
+    const rooms = Object.keys(socket.rooms);
+
+    // Leave each room
+    rooms.forEach((room) => {
+      if (room !== socket.id) {
+        // Skip the default room, which is the socket's own room
+        socket.leave(room, (error) => {
+          if (error) {
+            console.error(`Error leaving room ${room}:`, error);
+          } else {
+            console.log(`Socket left room: ${room}`);
+          }
+        });
+      }
+    });
+  });
 });
 
 const port = process.env.PORT || 8000;
