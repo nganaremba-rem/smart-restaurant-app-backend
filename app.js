@@ -42,5 +42,6 @@ app.use("/restaurant/api/v1/users", userRouter);
 app.use("/restaurant/api/v1/menuItems", menuItemRouter);
 app.use("/restaurant/api/v1/orders", orderRouter);
 app.use("/restaurant/api/payment", paymentRouter);
+
 app.use(errorController);
 module.exports = app;
