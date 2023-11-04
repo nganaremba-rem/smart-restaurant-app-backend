@@ -12,8 +12,3 @@
 Installs required npm packages.
 ### `npm start`
 Starts the application.
-
-# APIs and their usage:
-
-## 1. http://localhost:8000/api/v1/users/signup
-`Request Body:`
