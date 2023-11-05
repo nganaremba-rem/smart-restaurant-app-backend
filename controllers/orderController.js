@@ -51,7 +51,6 @@ exports.deleteOrder = asyncHandler(async (req, res) => {
   // chef deletes the order
   else if (
     req.user &&
-    currentOrder.chef.toString() == req.user._id &&
     (currentOrder.status == "confirmed_by_waiter" ||
       currentOrder.status == "confirmed_by_chef")
   ) {
