@@ -4,9 +4,10 @@ info:
   version: 1.0.0
   description: RnD project REST APIs
 servers:
-  - url: http://localhost:8000/api/v1
+  - url: http://localhost:5000/restaurant/api/v1
     description: Local Server
-
+  - url: http://10.250.1.216:5000/restaurant/api/v1
+    description: Remote server
 components:
   securitySchemes:
     BearerAuth:
@@ -139,6 +140,9 @@ components:
             - order is ready
             - payment done
           example: "pending"
+        isRated:
+          type: boolean
+          example: false
       required:
         - user
         - menuItems
@@ -193,6 +197,26 @@ components:
         - name
         - price
         - isVeg
+    Notification:
+      type: object
+      properties:
+        receiver:
+          type: string
+          format: uuid
+          description: The ID of the user who will receive the notification
+        createdAt:
+          type: string
+          format: date-time
+          description: The date and time when the notification was created
+        message:
+          type: string
+          description: The content of the notification
+        group:
+          type: string
+          enum:
+            - waiters
+            - chefs
+          description: The group associated with the notification
 
 # Authentication APIs
 paths:
@@ -707,3 +731,67 @@ paths:
                     description: Error message indicating that no orders were found for the customer.
       security:
         - BearerAuth: []
+  # Notification Routes
+  /notifications:
+    post:
+      summary: Create a notification
+      description: Create a new notification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                receiver:
+                  type: string
+                  format: uuid
+                  description: The ID of the user who will receive the notification
+                createdAt:
+                  type: string
+                  format: date-time
+                  description: The date and time when the notification was created
+                message:
+                  type: string
+                  description: The content of the notification
+                group:
+                  type: string
+                  enum:
+                    - waiters
+                    - chefs
+                  description: The group associated with the notification
+              required:
+                - receiver
+                - message
+                - group
+      responses:
+        "200":
+          description: Notification created successfully
+    get:
+      summary: Get my notifications
+      description: Retrieve notifications based on user role
+      responses:
+        "200":
+          description: List of notifications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Notification"
+        "204":
+          description: No notifications found
+  /notifications/{id}:
+    delete:
+      summary: Delete a notification by ID
+      description: Remove a notification based on its ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the notification to delete
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Notification deleted successfully
