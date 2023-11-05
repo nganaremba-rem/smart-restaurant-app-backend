@@ -4,7 +4,7 @@ const dotenv = require("dotenv");
 dotenv.config({ path: "./config.env" });
 const app = require("./app");
 const { createServer } = require("node:http");
-
+const notificationController = require("./controllers/notificationController");
 const server = createServer(app);
 const DB_URL = process.env.DB_URL;
 
@@ -62,6 +62,10 @@ io.on("connection", (socket) => {
       .to("waiters_room")
       .emit("pick_order", `order placed from table no. ${tableNumber}`);
     console.log("Order placed", tableNumber);
+    notificationController.createNotification({
+      message: `order placed from table no. ${tableNumber}`,
+      group: "waiters",
+    });
   });
 
   //done
@@ -74,6 +78,15 @@ io.on("connection", (socket) => {
         "waiter_confirmed",
         `Start preparation for table number ${tableNumber}`
       );
+    notificationController.createNotification({
+      receiver: customer,
+      message: `order placed from table no. ${tableNumber}`,
+    });
+    notificationController.createNotification({
+      message: `Start preparation for table number ${tableNumber}`,
+      group: "chefs",
+    });
+
     console.log("order confirmed notification sent to ", customer, tableNumber);
   });
 
@@ -83,6 +96,11 @@ io.on("connection", (socket) => {
     socket
       .to(`${customer}`)
       .emit("chef_started", "Chef started preparing your order");
+    notificationController.createNotification({
+      receiver: customer,
+      message: `Chef started preparing your order`,
+    });
+
     console.log("preparation started", customer);
   });
 
@@ -93,6 +111,14 @@ io.on("connection", (socket) => {
     socket
       .to(`${waiter}`)
       .emit("chef_ended", `Order from table ${tableNumber} is ready`);
+    notificationController.createNotification({
+      receiver: customer,
+      message: `your order is ready`,
+    });
+    notificationController.createNotification({
+      receiver: waiter,
+      message: `Order from table ${tableNumber} is ready`,
+    });
     console.log("order ready ", waiter, customer);
   });
 });
