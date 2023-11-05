@@ -76,3 +76,31 @@ calculateTotalFromOrderId = asyncHandler(async (id) => {
     return orderTotal[0].totalAmount;
   }
 });
+
+exports.calculateTotalForDay = asyncHandler(async (req, res) => {
+  const currentdate = new Date();
+  const startOfDay = new Date(currentdate);
+  startOfDay.setUTCHours(0, 0, 0, 0);
+  const endOfDay = new Date(currentdate);
+  endOfDay.setUTCHours(23, 59, 99, 999);
+
+  const orders = await Order.find({
+    createdAt: { $gte: startOfDay, $lte: endOfDay },
+    status: "paid",
+  });
+
+  let totalMoney = 10;
+
+  for (let i = 0; i < orders.length; i++) {
+    totalMoney += orders[i].totalAmount;
+  }
+
+  res
+    .status(200)
+    .json({
+      amount: totalMoney,
+      startdate: startOfDay,
+      enddate: endOfDay,
+      list: orders,
+    });
+});

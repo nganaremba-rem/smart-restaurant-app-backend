@@ -84,3 +84,18 @@ exports.updateMenuItem = asyncHandler(async (req, res) => {
     throw new CustomError("You are not allowed to update menu items.", 403);
   }
 });
+
+exports.menuName = asyncHandler(async (req, res) => {
+  const id = req.params.id; // Get the 'menuId' from the route parameter
+
+  // Use 'id' to fetch the menu name from the database
+  try {
+    const menuItem = await MenuItem.findById(id);
+    if (!menuItem) {
+      throw new CustomError("Menu item not found", 404);
+    }
+    res.json({ menuName: menuItem.name });
+  } catch (error) {
+    res.status(error.status || 500).json({ error: error.message });
+  }
+});

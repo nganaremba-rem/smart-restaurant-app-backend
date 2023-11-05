@@ -67,3 +67,19 @@ const getMenuRating = asyncHandler(async (menuId) => {
     throw new CustomError("Please provide menu ID", 400);
   }
 });
+
+exports.getRating = asyncHandler(async (req, res) => {
+  //Check if the user's role is "manager" or "admin"
+  if (
+    req.user &&
+    (req.user.role === "manager" ||
+      req.user.role === "admin" ||
+      req.user.role === "owner")
+  ) {
+    const rating = await Rating.find();
+    res.status(200).json(rating);
+  } else {
+    //If the user's role is not "manager" or "admin," return a 403 Forbidden status.
+    res.status(403).json({ message: "Unauthorized access" });
+  }
+});

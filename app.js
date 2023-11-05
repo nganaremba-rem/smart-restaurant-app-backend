@@ -12,6 +12,7 @@ const menuItemRouter = require("./routes/menuItemRoutes");
 const orderRouter = require("./routes/orderRoutes");
 const paymentRouter = require("./payment");
 const errorController = require("./controllers/errorController");
+const ratingRouter = require("./routes/ratingRoutes");
 const app = express();
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000, //10 mins
@@ -46,6 +47,6 @@ app.use("/restaurant/api/v1/users", userRouter);
 app.use("/restaurant/api/v1/menuItems", menuItemRouter);
 app.use("/restaurant/api/v1/orders", orderRouter);
 app.use("/restaurant/api/v1/payment", paymentRouter);
-
+app.use("/restaurant/api/v1/rating", ratingRouter);
 app.use(errorController);
 module.exports = app;
