@@ -20,13 +20,13 @@ router.post("/orders", async (req, res) => {
 
     instance.orders.create(options, (err, order) => {
       if (err) {
-        console.log(err);
+        // console.log(err);
         return res.status(500).json({ message: "Something went wrong" });
       }
       res.status(200).json({ data: order });
     });
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     return res.status(500).json({ message: "Something went wrong" });
   }
 });
@@ -35,21 +35,21 @@ router.post("/verify", async (req, res) => {
   try {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
       req.body;
-    console.log(req.body);
+    // console.log(req.body);
     const sign = razorpay_order_id + "|" + razorpay_payment_id;
     const expectedSign = crypto
       .createHmac("sha256", process.env.KEY_SECRET)
       .update(sign.toString())
       .digest("hex");
     if (razorpay_signature === expectedSign) {
-      console.log("hi");
+      // console.log("hi");
       updatePaymentStatus(req.user._id);
       return res.status(200).json({ message: "payment verified successfully" });
     } else {
       return res.status(400).json({ message: "Invalid signature sent" });
     }
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     return res.status(500).json({ message: "Something went wrong" });
   }
 });

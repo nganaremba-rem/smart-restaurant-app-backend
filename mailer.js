@@ -26,7 +26,7 @@ class Mailer {
 
     try {
       await mailTransporter.sendMail(details);
-      console.log("Email sent successfully");
+      // console.log("Email sent successfully");
     } catch (err) {
       console.error("Error sending email:", err);
     }

@@ -23,11 +23,7 @@ const limiter = rateLimit({
 
 app.use(limiter);
 
-app.use(
-  cors({
-    origin: process.env.REACT_APP_URL,
-  })
-);
+app.use(cors());
 app.use(express.json());
 
 // Data sanitization against NoSQL query injection
@@ -49,6 +45,6 @@ app.use("/restaurant/api/v1/menuItems", menuItemRouter);
 app.use("/restaurant/api/v1/orders", orderRouter);
 app.use("/restaurant/api/v1/payment", paymentRouter);
 app.use("/restaurant/api/v1/rating", ratingRouter);
-app.use("/restaurant/api/v1/notifications",notificationRouter);
+app.use("/restaurant/api/v1/notifications", notificationRouter);
 app.use(errorController);
 module.exports = app;

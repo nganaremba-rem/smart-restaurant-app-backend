@@ -17,41 +17,41 @@ io.on("connection", (socket) => {
   socket.on("join_waiters_room", (data) => {
     const { waiter } = data;
     const rooms = Array.from(socket.rooms); // Get all rooms the socket has joined
-    console.log(rooms);
+    // console.log(rooms);
 
     if (!rooms.includes(waiter) && !rooms.includes("waiters_room")) {
       socket.join(waiter);
       socket.join("waiters_room");
-      console.log("joined_waiters_room ", waiter, socket.rooms);
+      // console.log("joined_waiters_room ", waiter, socket.rooms);
     } else {
-      console.log("waiter Socket is already a member of this room");
+      // console.log("waiter Socket is already a member of this room");
     }
   });
 
   //done
   socket.on("join_chefs_room", (data) => {
     const rooms = Array.from(socket.rooms); // Get all rooms the socket has joined
-    console.log(rooms);
+    // console.log(rooms);
     const { chef } = data;
     if (!rooms.includes(chef) && !rooms.includes("chefs_room")) {
       socket.join(`${chef}`);
       socket.join("chefs_room");
-      console.log("chef joined room: " + chef, socket.rooms);
+      // console.log("chef joined room: " + chef, socket.rooms);
     } else {
-      console.log("chef Socket is already a member of this room");
+      // console.log("chef Socket is already a member of this room");
     }
   });
 
   // done
   socket.on("join_customer_room", (data) => {
     const rooms = Array.from(socket.rooms); // Get all rooms the socket has joined
-    console.log(rooms);
+    // console.log(rooms);
     const { customer } = data;
     if (!rooms.includes(customer)) {
       socket.join(`${customer}`);
-      console.log("customer joined room: " + customer, socket.rooms);
+      // console.log("customer joined room: " + customer, socket.rooms);
     } else {
-      console.log("customer Socket is already a member of this room");
+      // console.log("customer Socket is already a member of this room");
     }
   });
 
@@ -61,7 +61,7 @@ io.on("connection", (socket) => {
     socket
       .to("waiters_room")
       .emit("pick_order", `order placed from table no. ${tableNumber}`);
-    console.log("Order placed", tableNumber);
+    // console.log("Order placed", tableNumber);
     notificationController.createNotification({
       message: `order placed from table no. ${tableNumber}`,
       group: "waiters",
@@ -80,14 +80,14 @@ io.on("connection", (socket) => {
       );
     notificationController.createNotification({
       receiver: customer,
-      message: `order placed from table no. ${tableNumber}`,
+      message: `You order is confirmed`,
     });
     notificationController.createNotification({
       message: `Start preparation for table number ${tableNumber}`,
       group: "chefs",
     });
 
-    console.log("order confirmed notification sent to ", customer, tableNumber);
+    // console.log("order confirmed notification sent to ", customer, tableNumber);
   });
 
   //done
@@ -101,7 +101,7 @@ io.on("connection", (socket) => {
       message: `Chef started preparing your order`,
     });
 
-    console.log("preparation started", customer);
+    // console.log("preparation started", customer);
   });
 
   // done
@@ -119,11 +119,11 @@ io.on("connection", (socket) => {
       receiver: waiter,
       message: `Order from table ${tableNumber} is ready`,
     });
-    console.log("order ready ", waiter, customer);
+    // console.log("order ready ", waiter, customer);
   });
 });
 
 const port = process.env.PORT || 5000;
 server.listen(port, () => {
-  console.log(`App running on port ${port}...`);
+  // console.log(`App running on port ${port}...`);
 });
