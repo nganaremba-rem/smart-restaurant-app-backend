@@ -29,5 +29,8 @@
     "swagger-ui-express": "^5.0.0",
     "xss-clean": "^0.1.4",
     "yamljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "@remba/create-vercel-json-nodejs": "^1.0.0"
   }
 }
