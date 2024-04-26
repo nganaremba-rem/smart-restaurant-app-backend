@@ -16,9 +16,9 @@ const ratingRouter = require("./routes/ratingRoutes");
 const notificationRouter = require("./routes/notificationRoutes");
 const app = express();
 const limiter = rateLimit({
-  windowMs: 10 * 60 * 1000, //10 mins
-  max: 150, // limit each IP to 150 requests per windowMs
-  message: "Too many requests",
+	windowMs: 10 * 60 * 1000, //10 mins
+	max: 150, // limit each IP to 150 requests per windowMs
+	message: "Too many requests",
 });
 
 app.use(limiter);
@@ -36,9 +36,9 @@ app.use(xss());
 app.use(helmet());
 
 app.use(
-  "/restaurant/api/v1/docs",
-  swaggerUI.serve,
-  swaggerUI.setup(swaggerJsDoc)
+	"/restaurant/api/v1/docs",
+	swaggerUI.serve,
+	swaggerUI.setup(swaggerJsDoc),
 );
 app.use("/restaurant/api/v1/users", userRouter);
 app.use("/restaurant/api/v1/menuItems", menuItemRouter);
@@ -47,4 +47,8 @@ app.use("/restaurant/api/v1/payment", paymentRouter);
 app.use("/restaurant/api/v1/rating", ratingRouter);
 app.use("/restaurant/api/v1/notifications", notificationRouter);
 app.use(errorController);
+
+app.get("/", (req, res) => {
+	res.send("Server is running!");
+});
 module.exports = app;
