@@ -4,8 +4,7 @@
   "description": "Research and Development Progect 2023-2024 Autumn",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "build": "npm install"
+    "start": "node index.js"
   },
   "author": "",
   "license": "ISC",
