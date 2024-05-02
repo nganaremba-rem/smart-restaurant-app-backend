@@ -13,8 +13,6 @@ mongoose.connect(DB_URL).then(() => console.log("DB connection successful!"));
 const io = new Server(server, {
 	cors: {
 		origin: "*",
-		methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-		credentials: true,
 	},
 });
 
