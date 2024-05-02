@@ -31,7 +31,7 @@ exports.signup = asyncHandler(async (req, res) => {
 	if (!firstName || !lastName || !role || !email || !password) {
 		throw new CustomError("All fields are required", 400);
 	}
-	let user = await User.findOne({ email });
+	const user = await User.findOne({ email });
 	if (user?.isVerified) {
 		throw new CustomError(
 			"Account with this email already exists. Please SignIn",
